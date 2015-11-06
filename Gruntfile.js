@@ -5,31 +5,6 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 
-		    // Compress and zip only the files required for deployment to the server. Exclude all dev dependencies.
-		    compress: {
-		      main: {
-		        options: {
-		          archive: 'packaged/<%= pkg.name %>' + grunt.template.today('_yyyy-mm-dd_HH-MM') + '.zip',
-							mode: 'zip'
-		        },
-		        expand: true,
-		        cwd: '.',
-		        src: [
-							'**/*',
-							'!**/node_modules/**',
-							'!**/components/**',
-							'!**/scss/**',
-							'!**/bower.json',
-							'!**/Gruntfile.js',
-							'!**/package.json',
-							'!**/composer.json',
-							'!**/composer.lock',
-							'!**/codesniffer.ruleset.xml',
-							'!**/packaged/*'
-						],
-		        dest: '<%= pkg.name %>'
-		      },
-		    },
 		sass: {
 
 			options: {
@@ -44,7 +19,7 @@ module.exports = function (grunt) {
 					outputStyle: 'compressed'
 				},
 				files: {
-					'assets/stylesheets/foundation.css': 'assets/scss/foundation.scss'
+					'assets/app.css': 'assets/scss/foundation.scss'
 				}
 			}
 
@@ -58,33 +33,6 @@ module.exports = function (grunt) {
 				src: '**',
 				flatten: 'true',
 				dest: 'assets/javascript/vendor/'
-			},
-
-			iconfonts: {
-				expand: true,
-				cwd: 'assets/components/fontawesome/fonts',
-				src: ['**'],
-				dest: 'assets/fonts/'
-			}
-
-		},
-
-		'string-replace': {
-
-			fontawesome: {
-				files: {
-					'assets/fontawesome/scss/_variables.scss': 'assets/fontawesome/scss/_variables.scss'
-				},
-
-				options: {
-					replacements: [
-						{
-							pattern: '../fonts',
-							replacement: '../assets/fonts'
-						}
-					]
-				}
-
 			}
 
 		},
@@ -137,7 +85,7 @@ module.exports = function (grunt) {
 			dist: {
 				files: {
 					// Shrink the file size by removing spaces
-					'assets/javascript/foundation.js': ['assets/javascript/foundation.js']
+					'assets/javascript/foundation.js': ['dist/assets/app.js']
 				}
 			}
 
@@ -198,8 +146,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-browser-sync');
 
-	grunt.registerTask('package', ['compress:main']);
-	grunt.registerTask('build', ['copy', 'string-replace:fontawesome', 'sass', 'concat', 'uglify']);
+	grunt.registerTask('build', ['copy', 'sass', 'concat', 'uglify']);
 	grunt.registerTask('browser-sync', ['browserSync', 'watch']);
 	grunt.registerTask('default', ['watch']);
 };
